@@ -1,0 +1,9 @@
+<library path="mini_delta_hardware">
+    <class name="mini_delta_hardware/MiniDeltaHardwareInterface"
+           type="mini_delta_hardware::MiniDeltaHardwareInterface"
+           base_class_type="hardware_interface::SystemInterface">
+        <description>
+            Hardware interface for a mini_delta_hardware  with 3 servo motors
+        </description>
+    </class>
+</library>

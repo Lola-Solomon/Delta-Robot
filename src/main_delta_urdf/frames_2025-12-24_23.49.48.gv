@@ -1,0 +1,23 @@
+digraph G {
+"world" -> "link_0"[label=" Broadcaster: default_authority\nAverage rate: 10000.0\nBuffer length: 0.0\nMost recent transform: 0.0\nOldest transform: 0.0\n"];
+"lleg_12" -> "con13"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con1" -> "lleg_12"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"lleg_22" -> "con23"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con2" -> "lleg_22"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"uleg_1" -> "con1"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"uleg_2" -> "con2"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con3" -> "lleg_32"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"uleg_3" -> "con3"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"lleg_32" -> "con33"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con1" -> "lleg_1"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con2" -> "lleg_2"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con3" -> "lleg_3"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"link_0" -> "uleg_1"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"link_0" -> "uleg_2"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"link_0" -> "uleg_3"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+"con13" -> "low_base"[label=" Broadcaster: default_authority\nAverage rate: 10.2\nBuffer length: 5.0\nMost recent transform: 1766638188.358285\nOldest transform: 1766638183.358047\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1766638188.3724391"[ shape=plaintext ] ;
+}->"world";
+}
