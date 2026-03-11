@@ -4,9 +4,10 @@
   <ros2_control name="mini_delta_controller" type="system">
 
     <hardware>
-      <plugin>mock_components/GenericSystem</plugin>
-      <!-- <param name="calculate_dynamics">true</param> 
-     <plugin>mini_delta_hardware/MiniDeltaHardwareInterface</plugin> -->
+      <!-- <plugin>mock_components/GenericSystem</plugin> -->
+      <param name="calculate_dynamics">true</param> 
+     <plugin>mini_delta_hardware/MiniDeltaHardwareInterface</plugin>
+     <!-- <plugin>delta_stepper_hw/DeltaStepperHardware</plugin> -->
     </hardware>
 
     <joint name="link_0_JOINT_1">

@@ -57,38 +57,38 @@ class deltanode(Node):
         thetasf = [math.radians(x) for x in thetasf]
         thetasf = [-x for x in thetasf]
 
-        home = [math.radians(x) for x in home]
-        home = [-x for x in home]
+        # home = [math.radians(x) for x in home]
+        # home = [-x for x in home]
 
-        home2 = [math.radians(x) for x in home2]
-        home2 = [-x for x in home2]
+        # home2 = [math.radians(x) for x in home2]
+        # home2 = [-x for x in home2]
 
-        home=[-0.523,0.0,0.0]
-        home2=[0.0,0.0,0.0]
+        # home=[-0.523,0.0,0.0]
+        # home2=[0.0,0.0,0.0]
         if thetasi is None :
             print("IK failed — target outside workspace")
     
         pointi.positions = thetasi
         pointf.positions = thetasf
-        pointh.positions =home
-        pointh2.positions =home2
+        # pointh.positions =home
+        # pointh2.positions =home2
 
         pointi.velocities = [0.0] * 3
         pointf.velocities = [0.0] * 3
-        pointh.velocities = [0.0] * 3
-        pointh2.velocities = [0.0] * 3
+        # pointh.velocities = [0.0] * 3
+        # pointh2.velocities = [0.0] * 3
 
         pointi.accelerations = [0.0] * 3
         pointf.accelerations = [0.0] * 3
-        pointh.accelerations = [0.0] * 3
-        pointh2.accelerations = [0.0] * 3
+        # pointh.accelerations = [0.0] * 3
+        # pointh2.accelerations = [0.0] * 3
 
         pointi.time_from_start = Duration(sec=1)
         pointf.time_from_start = Duration(sec=3)
-        pointh.time_from_start = Duration(sec=2)
-        pointh2.time_from_start = Duration(sec=4)
+        # pointh.time_from_start = Duration(sec=2)
+        # pointh2.time_from_start = Duration(sec=4)
 
-        trajectory.points = [pointi, pointh,pointf,pointh2]
+        trajectory.points = [pointi,pointf]
         # trajectory.points = [pointh]
 
         # --- Attach trajectory to goal ---

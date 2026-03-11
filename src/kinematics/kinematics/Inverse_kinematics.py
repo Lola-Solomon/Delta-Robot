@@ -79,9 +79,13 @@ def inverse(x0, y0, z0):
     theta3 = delta_calcAngleYZ(x2, y2, z0)
     if theta3 is None:
         return None
-
+    if theta1 < -30 or theta2 < -30 or theta3 < -30:
+        print(theta1)
+        print(theta2)
+        print(theta3)
+        return None
     return theta1, theta2, theta3
 
 
 thatas=inverse(0.1,0.0,-0.12)
-# print(thatas)
+print(thatas)
