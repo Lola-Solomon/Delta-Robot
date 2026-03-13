@@ -6,7 +6,7 @@
     <hardware>
       <!-- <plugin>mock_components/GenericSystem</plugin> -->
       <param name="calculate_dynamics">true</param> 
-     <plugin>mini_delta_hardware/MiniDeltaHardwareInterface</plugin>
+      <plugin>mini_delta_hardware/MiniDeltaHardwareInterface</plugin>
      <!-- <plugin>delta_stepper_hw/DeltaStepperHardware</plugin> -->
     </hardware>
 

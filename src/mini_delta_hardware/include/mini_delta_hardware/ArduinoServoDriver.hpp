@@ -4,6 +4,7 @@
 #include <string>
 #include <libserial/SerialPort.h>
 #include <iostream>
+#include <cmath>
 
 class ArduinoServoDriver {
 public:
@@ -61,11 +62,32 @@ void setTargetPositions(double radian1, double radian2, double radian3) {
     }
 
     // message format
-    std::string msg = std::to_string(deg1) + " " +
-                      std::to_string(deg2) + " " +
-                      std::to_string(deg3) + "\n";
+    // std::string msg = std::to_string(deg1) + " " +
+    //                   std::to_string(deg2) + " " +
+    //                   std::to_string(deg3) + "\n";
 
-    serial_port_.Write(msg);
+    const int steps_per_rev = 3200; // 200 steps * 16 microstep
+    const double two_pi = 2.0 * M_PI;
+
+    int steps1 = static_cast<int>((radian1 / two_pi) * steps_per_rev);
+    int steps2 = static_cast<int>((radian2 / two_pi) * steps_per_rev);
+    int steps3 = static_cast<int>((radian3 / two_pi) * steps_per_rev);
+    std::cout << "Sending steps: "
+          << steps1 << " "
+          << steps2 << " "
+          << steps3 << std::endl;
+//     std::string msg =
+//         std::to_string(1800) + " " +
+//         std::to_string(1400) + " " +
+//         std::to_string(1300) + "\n";
+
+//     serial_port_.Write(msg);
+// }
+
+    std::string msg =
+    std::to_string(steps1) +"\n";
+
+serial_port_.Write(msg);
 }
 
 

@@ -53,7 +53,7 @@ public:
     {
         if (!serial_port_.IsOpen())
             return;
-
+        
         const int steps_per_rev = 3200; // 200 steps * 16 microstep
         const double two_pi = 2.0 * M_PI;
 
@@ -62,7 +62,7 @@ public:
         int steps3 = static_cast<int>((radian3 / two_pi) * steps_per_rev);
 
         std::string msg =
-            std::to_string(steps1) + " " +
+            std::to_string(steps1)+ " " +
             std::to_string(steps2) + " " +
             std::to_string(steps3) + "\n";
 
