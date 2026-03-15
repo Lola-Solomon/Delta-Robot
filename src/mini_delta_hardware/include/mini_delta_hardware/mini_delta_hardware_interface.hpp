@@ -46,6 +46,7 @@ private:
     std::string serial_device_;  // serial device path
 
     std::vector<double> hw_positions_;
+    std::vector<double> hw_velocity_commands_;
     std::vector<double> hw_states_;
     std::vector<double> hw_velocities_;
     

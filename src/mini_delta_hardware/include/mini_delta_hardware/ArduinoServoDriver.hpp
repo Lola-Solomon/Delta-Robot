@@ -35,12 +35,15 @@ public:
     }
 
     // Set target position for 3 servos
-void setTargetPositions(double radian1, double radian2, double radian3) {
+void setTargetPositions(double radian1, double radian2, double radian3 , double vel1, double vel2,double vel3) {
     if (!serial_port_.IsOpen()) return;
 
     int deg1 = static_cast<int>(radian1 * (180.0 / 3.14159)+90);
     int deg2 = static_cast<int>(radian2 * (180.0 / 3.14159)+90);
     int deg3 = static_cast<int>(radian3 * (180.0 / 3.14159)+90);
+
+    //stepper only
+    
 
 // clamp using if conditions
     if (deg1 < 0) {
@@ -72,6 +75,11 @@ void setTargetPositions(double radian1, double radian2, double radian3) {
     int steps1 = static_cast<int>((radian1 / two_pi) * steps_per_rev);
     int steps2 = static_cast<int>((radian2 / two_pi) * steps_per_rev);
     int steps3 = static_cast<int>((radian3 / two_pi) * steps_per_rev);
+
+    //stepper only
+    int vel_steps1 = static_cast<int>((vel1 / two_pi) * steps_per_rev);
+    int vel_steps2 = static_cast<int>((vel2 / two_pi) * steps_per_rev);
+    int vel_steps3 = static_cast<int>((vel3 / two_pi) * steps_per_rev);
     std::cout << "Sending steps: "
           << steps1 << " "
           << steps2 << " "
@@ -85,7 +93,10 @@ void setTargetPositions(double radian1, double radian2, double radian3) {
 // }
 
     std::string msg =
-    std::to_string(steps1) +"\n";
+std::to_string(steps1) + " " + std::to_string(vel_steps1) + "\n";
+//     std::string msg =
+// std::to_string(1800) +  "\n";
+
 
 serial_port_.Write(msg);
 }

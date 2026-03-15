@@ -23,6 +23,8 @@ namespace mini_delta_hardware {
     hw_positions_.resize(info_.joints.size(), 0.0);
     hw_states_.resize(info_.joints.size(), 0.0);
     hw_velocities_.resize(info_.joints.size(),0.0);
+    hw_velocity_commands_.resize(info_.joints.size(), 0.0);
+
 
     return hardware_interface::CallbackReturn::SUCCESS;
 
@@ -76,6 +78,11 @@ namespace mini_delta_hardware {
      {
          command_interfaces.emplace_back(hardware_interface::CommandInterface(
          info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
+
+
+         //adding velocity interface to control stepper freq at arduino this is for stepper only if using servo this line is not important
+         command_interfaces.emplace_back( hardware_interface::CommandInterface(
+         info_.joints[i].name,hardware_interface::HW_IF_VELOCITY,&hw_velocity_commands_[i]));
      }
 
     return command_interfaces;
@@ -104,8 +111,15 @@ namespace mini_delta_hardware {
         (void)period;
         double rad_joint1 = hw_positions_[0];
         double rad_joint2 = hw_positions_[1];
-        double rad_joint3 = hw_positions_[2];  
-        servo_driver_->setTargetPositions(rad_joint1, rad_joint2, rad_joint3);
+        double rad_joint3 = hw_positions_[2];
+        //these thre velocity joints are just for steppers
+        double vel_joint1 = hw_velocity_commands_[0];
+        double vel_joint2 = hw_velocity_commands_[1];
+        double vel_joint3 = hw_velocity_commands_[2];
+
+        // servo_driver_->setTargetPositions(rad_joint1, rad_joint2, rad_joint3);
+        servo_driver_->setTargetPositions(rad_joint1, rad_joint2, rad_joint3,vel_joint1,vel_joint2,vel_joint3);
+        
 
     return hardware_interface::return_type::OK;
     }

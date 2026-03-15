@@ -37,7 +37,7 @@ class deltanode(Node):
         # thetasi = inverse(0.06,0.0,-0.15)
         # thetasf = inverse(-0.09,0.0,-0.18)
 
-        thetasi = (180,180,180)
+        thetasi = (90,180,180)
         thetasf = (300,300,300)
 
         thetasi = [math.radians(x) for x in thetasi]
@@ -58,8 +58,8 @@ class deltanode(Node):
         pointi.accelerations = [0.0] * 3
         pointf.accelerations = [0.0] * 3
 
-        pointi.time_from_start = Duration(sec=0,nanosec=200000000)
-        pointf.time_from_start = Duration(sec=0,nanosec=600000000)
+        pointi.time_from_start = Duration(sec=0,nanosec=1000000000)
+        pointf.time_from_start = Duration(sec=0,nanosec=2000000000)
         # pointi.time_from_start = Duration(sec=1)
         # pointf.time_from_start = Duration(sec=4)
 
