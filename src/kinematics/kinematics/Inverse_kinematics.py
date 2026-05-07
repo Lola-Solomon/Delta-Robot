@@ -12,14 +12,18 @@ tan30 = 1 / sqrt3
 
 # ------------------- GEOMETRY (mm) -------------------
 # MUST match FK exactly
-# f=0.519615 #Base 
-# e=0.1732 #EndEffector
-# rf=0.3     #Bicep
-# re=0.600      #Forarm
-f=0.439075 /2  #Base 
-e=0.200918 /2  #EndEffector
-rf=0.100      #Bicep
-re=0.200      #Forarm
+f=0.519615 #Base 
+e=0.1732 #EndEffector
+rf=0.3     #Bicep
+re=0.600      #Forarm
+# f=0.439075 /2  #Base 
+# e=0.200918 /2  #EndEffector
+# rf=0.100      #Bicep
+# re=0.200      #Forarm
+
+#stepperdelta
+
+
 
 # ====================================================
 # Helper: IK for one arm (YZ plane)
@@ -87,5 +91,5 @@ def inverse(x0, y0, z0):
     return theta1, theta2, theta3
 
 
-thatas=inverse(0.1,0.0,-0.12)
+thatas=inverse(0.0,0.0,-0.7)
 print(thatas)

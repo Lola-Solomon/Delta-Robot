@@ -23,6 +23,9 @@ public:
             std::cout << "Failed to open serial port!" << std::endl;
             return -1;
         }
+
+        // In init() — wait for HOMED message before returning
+       
     }
 
     void activate() {
@@ -35,71 +38,65 @@ public:
     }
 
     // Set target position for 3 servos
-void setTargetPositions(double radian1, double radian2, double radian3 , double vel1, double vel2,double vel3) {
-    if (!serial_port_.IsOpen()) return;
+// void setTargetPositions(double radian1, double radian2, double radian3 , double vel1, double vel2,double vel3) {
+//     if (!serial_port_.IsOpen()) return;
 
-    int deg1 = static_cast<int>(radian1 * (180.0 / 3.14159)+90);
-    int deg2 = static_cast<int>(radian2 * (180.0 / 3.14159)+90);
-    int deg3 = static_cast<int>(radian3 * (180.0 / 3.14159)+90);
+//     int deg1 = static_cast<int>(radian1 * (180.0 / 3.14159)+90);
+//     int deg2 = static_cast<int>(radian2 * (180.0 / 3.14159)+90);
+//     int deg3 = static_cast<int>(radian3 * (180.0 / 3.14159)+90);
 
-    //stepper only
+//     //stepper only
     
 
-// clamp using if conditions
-    if (deg1 < 0) {
-        deg1 = 0;
-    } else if (deg1 > 180) {
-        deg1 = 180;
-    }
+// // clamp using if conditions
+//     if (deg1 < 0) {
+//         deg1 = 0;
+//     } else if (deg1 > 180) {
+//         deg1 = 180;
+//     }
 
-    if (deg2 < 0) {
-        deg2 = 0;
-    } else if (deg2 > 180) {
-        deg2 = 180;
-    }
+//     if (deg2 < 0) {
+//         deg2 = 0;
+//     } else if (deg2 > 180) {
+//         deg2 = 180;
+//     }
 
-    if (deg3 < 0) {
-        deg3 = 0;
-    } else if (deg3 > 180) {
-        deg3 = 180;
-    }
+//     if (deg3 < 0) {
+//         deg3 = 0;
+//     } else if (deg3 > 180) {
+//         deg3 = 180;
+//     }
 
-    // message format
-    // std::string msg = std::to_string(deg1) + " " +
-    //                   std::to_string(deg2) + " " +
-    //                   std::to_string(deg3) + "\n";
+//     // message format
+//     // std::string msg = std::to_string(deg1) + " " +
+//     //                   std::to_string(deg2) + " " +
+//     //                   std::to_string(deg3) + "\n";
 
-    const int steps_per_rev = 3200; // 200 steps * 16 microstep
-    const double two_pi = 2.0 * M_PI;
 
-    int steps1 = static_cast<int>((radian1 / two_pi) * steps_per_rev);
-    int steps2 = static_cast<int>((radian2 / two_pi) * steps_per_rev);
-    int steps3 = static_cast<int>((radian3 / two_pi) * steps_per_rev);
-
-    //stepper only
-    int vel_steps1 = static_cast<int>((vel1 / two_pi) * steps_per_rev);
-    int vel_steps2 = static_cast<int>((vel2 / two_pi) * steps_per_rev);
-    int vel_steps3 = static_cast<int>((vel3 / two_pi) * steps_per_rev);
-    std::cout << "Sending steps: "
-          << steps1 << " "
-          << steps2 << " "
-          << steps3 << std::endl;
-//     std::string msg =
-//         std::to_string(1800) + " " +
-//         std::to_string(1400) + " " +
-//         std::to_string(1300) + "\n";
 
 //     serial_port_.Write(msg);
 // }
+    void setTargetPositions(double radian1, double radian2, double radian3,
+                            double vel1, double vel2, double vel3) {
+        if (!serial_port_.IsOpen()) return;
 
-    std::string msg =
-std::to_string(steps1) + " " + std::to_string(vel_steps1) + "\n";
-//     std::string msg =
-// std::to_string(1800) +  "\n";
+        const int    steps_per_rev = 3200;
+        const double two_pi        = 2.0 * M_PI;
+
+        int steps1 = static_cast<int>((radian1 / two_pi) * steps_per_rev*3);
+        int steps2 = static_cast<int>((radian2 / two_pi) * steps_per_rev*3);
+        int steps3 = static_cast<int>((radian3 / two_pi) * steps_per_rev*3);
+
+        // Just positions — AccelStepper handles velocity/accel
+        std::string msg = std::to_string(steps1) + " " +
+                        std::to_string(steps2) + " " +
+                        std::to_string(steps3) + "\n";
+
+        serial_port_.Write(msg);
+    }
 
 
-serial_port_.Write(msg);
-}
+
 
 
     double getPosition(int servo_id) {

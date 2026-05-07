@@ -34,11 +34,14 @@ class deltanode(Node):
         pointi = JointTrajectoryPoint()
         pointf = JointTrajectoryPoint()
 
-        # thetasi = inverse(0.06,0.0,-0.15)
-        # thetasf = inverse(-0.09,0.0,-0.18)
+        thetasi = inverse(-0.2,0.0,-0.6)
+        thetasf = inverse(0.2,0.0,-0.6)
 
-        thetasi = (90,180,180)
-        thetasf = (300,300,300)
+        # thetasi = (40,40,40)
+        # thetasf = (0,0,0)
+        if thetasi is None :
+            print("IK failed — target outside workspace")
+            return
 
         thetasi = [math.radians(x) for x in thetasi]
         thetasi = [-x for x in thetasi]
@@ -46,8 +49,7 @@ class deltanode(Node):
         thetasf = [math.radians(x) for x in thetasf]
         thetasf = [-x for x in thetasf]
 
-        if thetasi is None :
-            print("IK failed — target outside workspace")
+        
 
         pointi.positions = thetasi
         pointf.positions = thetasf
@@ -58,10 +60,10 @@ class deltanode(Node):
         pointi.accelerations = [0.0] * 3
         pointf.accelerations = [0.0] * 3
 
-        pointi.time_from_start = Duration(sec=0,nanosec=1000000000)
-        pointf.time_from_start = Duration(sec=0,nanosec=2000000000)
-        # pointi.time_from_start = Duration(sec=1)
-        # pointf.time_from_start = Duration(sec=4)
+        # pointi.time_from_start = Duration(sec=0,nanosec=500000000)
+        # pointf.time_from_start = Duration(sec=0,nanosec=800000000)
+        pointi.time_from_start = Duration(sec=1)
+        pointf.time_from_start = Duration(sec=2)
 
         trajectory.points = [pointi,pointf]
 
@@ -105,16 +107,18 @@ class deltanode(Node):
     def feedback_callback(self, feedback_msg):
 
         feedback = feedback_msg.feedback
-        positions = list(feedback.actual.positions)
 
-        # ⭐ TIME IN NANOSECONDS (ONLY CHANGE DONE)
+        positions = list(feedback.actual.positions)
+        velocities = list(feedback.actual.velocities)
+
         t = (self.get_clock().now() - self.start_time).nanoseconds
 
         self.logged_positions.append(positions)
         self.logged_time.append(t)
 
-        self.get_logger().info(f"t_ns={t}  q={positions}")
-
+        self.get_logger().info(
+            f"t_ns={t}  q={positions}  v={velocities}"
+        )
     ###########################################################################
 
     def save_to_csv(self):

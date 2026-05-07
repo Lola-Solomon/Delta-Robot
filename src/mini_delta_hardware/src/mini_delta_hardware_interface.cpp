@@ -97,7 +97,7 @@ namespace mini_delta_hardware {
         for (std::size_t i = 0; i < info_.joints.size(); i++)
         {
             hw_states_[i]=hw_positions_[i];
-            hw_velocities_[i]=0.0;
+            hw_velocities_[i] = hw_velocity_commands_[i];
         } 
         
         // Read positions from servos (not implemented)
@@ -116,6 +116,12 @@ namespace mini_delta_hardware {
         double vel_joint1 = hw_velocity_commands_[0];
         double vel_joint2 = hw_velocity_commands_[1];
         double vel_joint3 = hw_velocity_commands_[2];
+
+        // In write() temporarily
+        std::cout << "VEL COMMANDS: "
+                << hw_velocity_commands_[0] << " "
+                << hw_velocity_commands_[1] << " "
+                << hw_velocity_commands_[2] << std::endl;
 
         // servo_driver_->setTargetPositions(rad_joint1, rad_joint2, rad_joint3);
         servo_driver_->setTargetPositions(rad_joint1, rad_joint2, rad_joint3,vel_joint1,vel_joint2,vel_joint3);
