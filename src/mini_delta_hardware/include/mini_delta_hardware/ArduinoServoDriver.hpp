@@ -5,6 +5,9 @@
 #include <libserial/SerialPort.h>
 #include <iostream>
 #include <cmath>
+#include "rclcpp/rclcpp.hpp"
+#include <thread>
+#include <chrono>
 
 class ArduinoServoDriver {
 public:
@@ -13,50 +16,94 @@ public:
 
 
     int init() {
+    // Open serial port
     std::cout << "Initializing Arduino Servo Driver..." << std::endl;
+    RCLCPP_INFO(
+        rclcpp::get_logger("ArduinoServoDriver"),
+        "Initializing Arduino Servo Driver..."
+        );
 
     try {
         serial_port_.Open(device_name_);
         serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
+        std::this_thread::sleep_for(std::chrono::seconds(2));
         std::cout << "Serial port opened successfully!" << std::endl;
+        RCLCPP_INFO(
+            rclcpp::get_logger("ArduinoServoDriver"),
+            "Serial port opened successfully!"
+            );
+
+        
+        
     } catch (...) {
         std::cout << "Failed to open serial port!" << std::endl;
+        RCLCPP_ERROR(
+            rclcpp::get_logger("ArduinoServoDriver"),
+            "Failed to open serial port!"
+            );
         return -1;
     }
 
+
+
     // ── Wait for Arduino to send "READY" after boot ──────────────
     std::cout << "Waiting for Arduino READY..." << std::endl;
+    RCLCPP_INFO(
+        rclcpp::get_logger("ArduinoServoDriver"),
+        "Waiting for Arduino READY..."
+    );
     std::string line;
-    while (true) {
+    bool ready_received = false;
+    while (!ready_received) {
         try {
             serial_port_.ReadLine(line, '\n', 5000);  // 5 sec timeout
             line.erase(line.find_last_not_of(" \r\n") + 1);  // trim
-            if (line == "READY") break;
+            RCLCPP_INFO(
+                rclcpp::get_logger("ArduinoServoDriver"),
+                "Arduino says: '%s'",
+                line.c_str()
+            );
+            if (line == "READY") 
+            {   
+                RCLCPP_INFO(
+                    rclcpp::get_logger("ArduinoServoDriver"),
+                    "Arduino READY received."
+                    );
+                serial_port_.Write("S\n");  
+                serial_port_.DrainWriteBuffer();
+                serial_port_.FlushIOBuffers(); 
+                ready_received = true;
+                break;
+            }
         } catch (...) {
             std::cout << "Timeout waiting for READY!" << std::endl;
+            RCLCPP_ERROR(
+                rclcpp::get_logger("ArduinoServoDriver"),
+                "Timeout waiting for READY!"
+                );
             return -1;
         }
     }
 
-    // ── Send START to trigger homing ──────────────────────────────
-    // std::cout << "Sending START..." << std::endl;
-    // serial_port_.Write("START\n");
 
-    // // ── Wait for HOMED before letting ROS2 control begin ─────────
-    // std::cout << "Waiting for homing to complete..." << std::endl;
-    // while (true) {
-    //     try {
-    //         serial_port_.ReadLine(line, '\n', 30000);  // 30 sec timeout
-    //         line.erase(line.find_last_not_of(" \r\n") + 1);  // trim
-    //         std::cout << "[Arduino] " << line << std::endl;  // shows JOINT_X_HOMED too
-    //         if (line == "HOMED") break;
-    //     } catch (...) {
-    //         std::cout << "Timeout waiting for HOMED!" << std::endl;
-    //         return -1;
-    //     }
-    // }
+    RCLCPP_INFO(rclcpp::get_logger("ArduinoServoDriver"), "Waiting for HOMED...");
+    while (ready_received) {
+        try {
+            serial_port_.ReadLine(line, '\n', 30000);
+            line.erase(line.find_last_not_of(" \r\n") + 1);
+            RCLCPP_INFO(rclcpp::get_logger("ArduinoServoDriver"), "Arduino says: '%s'", line.c_str());
 
-    // std::cout << "Homing complete! Hardware ready." << std::endl;
+            if (line == "HOMED") {
+                RCLCPP_INFO(rclcpp::get_logger("ArduinoServoDriver"), "Arduino HOMED received. Ready to control.");
+                break;
+            }
+        } catch (...) {
+            RCLCPP_ERROR(rclcpp::get_logger("ArduinoServoDriver"), "Timeout waiting for HOMED!");
+            return -1;
+        }
+    }
+
+   
     return 0;
 }
 
