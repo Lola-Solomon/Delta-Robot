@@ -31,13 +31,29 @@ class deltanode(Node):
         trajectory = JointTrajectory()
         trajectory.joint_names = ['link_0_JOINT_1', 'link_0_JOINT_2', 'link_0_JOINT_3']
 
+        # -0.487 is the end effector z position when the biceps are parallel to the base (home position)
+        # z is negative to below the base, and positive to above the base
+        # angles are positive below the base, and negative above the base
+
         pointi = JointTrajectoryPoint()
         pointf = JointTrajectoryPoint()
+        pointf2 = JointTrajectoryPoint()
+        pointf3 = JointTrajectoryPoint()
+        pointf4 = JointTrajectoryPoint()
+        pointf5 = JointTrajectoryPoint()
+        pointf6 = JointTrajectoryPoint()
 
-        thetasi = inverse(-0.2,0.0,-0.6)
-        thetasf = inverse(0.2,0.0,-0.6)
+        thetasi = inverse(0.0,0.2,-0.6)
+        thetasf = inverse(0.0,-0.0,-0.6)
+        thetasf2 = inverse(0.0,0.2,-0.6)
+        thetasf3 = inverse(0.0,-0.2,-0.6)
+        thetasf4 = inverse(0.0,0.1,-0.6)
+        thetasf5 = inverse(0.3,0.0,-0.6)
+        thetasf6 = inverse(0.0,0.0,-0.45)
 
-        # thetasi = (40,40,40)
+
+
+        # thetasi = (-20,-50,-30)
         # thetasf = (0,0,0)
         if thetasi is None :
             print("IK failed — target outside workspace")
@@ -49,22 +65,61 @@ class deltanode(Node):
         thetasf = [math.radians(x) for x in thetasf]
         thetasf = [-x for x in thetasf]
 
-        
+        thetasf2 = [math.radians(x) for x in thetasf2]
+        thetasf2 = [-x for x in thetasf2]
+
+        thetasf3 = [math.radians(x) for x in thetasf3]
+        thetasf3 = [-x for x in thetasf3]
+
+        thetasf4 = [math.radians(x) for x in thetasf4]
+        thetasf4 = [-x for x in thetasf4]
+
+        thetasf5 = [math.radians(x) for x in thetasf4]
+        thetasf5 = [-x for x in thetasf4]
+
+        thetasf6 = [math.radians(x) for x in thetasf4]
+        thetasf6 = [-x for x in thetasf4]
+
+
 
         pointi.positions = thetasi
         pointf.positions = thetasf
+        pointf2.positions = thetasf2
+        pointf3.positions = thetasf3
+        pointf4.positions = thetasf4
+        pointf5.positions=thetasf5
+        pointf6.positions=thetasf6
 
         pointi.velocities = [0.0] * 3
         pointf.velocities = [0.0] * 3
+        pointf2.velocities = [0.0] * 3
+        pointf3.velocities = [0.0] * 3
+        pointf4.velocities = [0.0] * 3
+        pointf5.velocities = [0.0] * 3
+        pointf6.velocities = [0.0] * 3
+
 
         pointi.accelerations = [0.0] * 3
         pointf.accelerations = [0.0] * 3
+        pointf2.accelerations = [0.0] * 3
+        pointf3.accelerations = [0.0] *3
+        pointf4.accelerations = [0.0] * 3
+        pointf5.accelerations = [0.0] *3
+        pointf6.accelerations = [0.0] *3
 
         # pointi.time_from_start = Duration(sec=0,nanosec=500000000)
         # pointf.time_from_start = Duration(sec=0,nanosec=800000000)
         pointi.time_from_start = Duration(sec=1)
         pointf.time_from_start = Duration(sec=2)
+        pointf2.time_from_start = Duration(sec=3)
+        pointf3.time_from_start = Duration(sec=4)
+        pointf4.time_from_start = Duration(sec=5)
+        pointf5.time_from_start = Duration(sec=6)
+        pointf6.time_from_start = Duration(sec=7)
 
+
+
+        # trajectory.points = [pointi,pointf,pointf2,pointf3,pointf4,pointf5,pointf6]
         trajectory.points = [pointi,pointf]
 
         goal_msg = FollowJointTrajectory.Goal()

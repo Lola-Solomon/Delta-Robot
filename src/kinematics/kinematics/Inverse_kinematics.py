@@ -12,9 +12,9 @@ tan30 = 1 / sqrt3
 
 # ------------------- GEOMETRY (mm) -------------------
 # MUST match FK exactly
-f=0.519615 #Base 
-e=0.1732 #EndEffector
-rf=0.3     #Bicep
+f=0.519615 #Base 300 dia
+e=0.1732 #EndEffector 100 dia
+rf=0.25    #Bicep
 re=0.600      #Forarm
 # f=0.439075 /2  #Base 
 # e=0.200918 /2  #EndEffector
@@ -83,7 +83,7 @@ def inverse(x0, y0, z0):
     theta3 = delta_calcAngleYZ(x2, y2, z0)
     if theta3 is None:
         return None
-    if theta1 < -30 or theta2 < -30 or theta3 < -30:
+    if theta1 < -40 or theta2 < -40 or theta3 < -40:
         print(theta1)
         print(theta2)
         print(theta3)
@@ -91,5 +91,5 @@ def inverse(x0, y0, z0):
     return theta1, theta2, theta3
 
 
-thatas=inverse(0.0,0.0,-0.7)
+thatas=inverse(0,-0.3,-0.6)
 print(thatas)

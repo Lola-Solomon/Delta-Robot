@@ -1,7 +1,7 @@
 #include <AccelStepper.h>
 
 #define EN_PIN 2
-#define PUMP_PIN 13  // Change to your pump control pin
+#define PUMP_PIN 13
 
 AccelStepper stepper0(AccelStepper::DRIVER, 3, 4);
 AccelStepper stepper1(AccelStepper::DRIVER, 6, 7);
@@ -9,9 +9,7 @@ AccelStepper stepper2(AccelStepper::DRIVER, 8, 9);
 
 AccelStepper* steppers[3] = {&stepper0, &stepper1, &stepper2};
 
-// ── Limit switch pins ─────────────────────────────────────
-const int LIMIT_PINS[3] = {10, 11, 12};  // change to your pins
-
+const int LIMIT_PINS[3] = {10, 11, 12};
 const bool  INVERT_DIR[3] = {false, false, false};
 const float MAX_SPEED     = 8000.0;
 const float MAX_ACCEL     = 6000.0;
@@ -19,11 +17,11 @@ const float HOME_SPEED    = 1000.0;
 
 bool joint_homed[3] = {false, false, false};
 bool is_homed       = false;
+bool homing_started = false;   // ← NEW: homing only starts after ROS connects
 
-// Pump control variables
 bool pump_on = false;
-long target_positions[3] = {0, 0, 0};  // Current goal positions
-long prev_positions[3] = {0, 0, 0};    // Previous positions to detect movement
+long target_positions[3] = {0, 0, 0};
+long prev_positions[3] = {0, 0, 0};
 
 static String buf = "";
 
@@ -36,28 +34,52 @@ void setup() {
 
   for (int i = 0; i < 3; i++) {
     pinMode(LIMIT_PINS[i], INPUT_PULLUP);
-
-    steppers[i]->setMaxSpeed(HOME_SPEED);  // slow for homing
+    steppers[i]->setMaxSpeed(HOME_SPEED);
     steppers[i]->setAcceleration(MAX_ACCEL);
     steppers[i]->setCurrentPosition(0);
     steppers[i]->setPinsInverted(INVERT_DIR[i], false, false);
-
-    // ── Rotate toward limit switch on startup ─────────────
-    steppers[i]->moveTo(-100000);
   }
 
-  Serial.println("HOMING_START");
+  // ── Do NOT start homing here. Wait for ROS to send "START" ──
+  Serial.println("READY");   // tell ROS the Arduino is alive
 }
 
 // ─────────────────────────────────────────────────────────
 void loop() {
-  if (!is_homed) {
-    doHoming();          // rotating until all switches pressed
+  if (!homing_started) {
+    waitForROS();            // ← blocks until ROS sends "START"
+  } else if (!is_homed) {
+    doHoming();
   } else {
-    readSerial();        // only reads serial after fully homed
+    readSerial();
   }
 
   for (int i = 0; i < 3; i++) steppers[i]->run();
+}
+
+// ─────────────────────────────────────────────────────────
+// Waits for ROS to send the string "START\n" before homing
+void waitForROS() {
+  while (Serial.available()) {
+    char c = Serial.read();
+
+    if (c == '\n') {
+      buf.trim();
+      if (buf == "START") {
+        homing_started = true;
+
+        // Begin moving toward limit switches
+        for (int i = 0; i < 3; i++) {
+          steppers[i]->moveTo(-100000);
+        }
+
+        Serial.println("HOMING_START");
+      }
+      buf = "";
+    } else if (c != '\r') {
+      buf += c;
+    }
+  }
 }
 
 // ─────────────────────────────────────────────────────────
@@ -69,7 +91,7 @@ void doHoming() {
 
     all_done = false;
 
-    if (digitalRead(LIMIT_PINS[i]) == LOW) {  // switch pressed
+    if (digitalRead(LIMIT_PINS[i]) == LOW) {
       steppers[i]->stop();
       steppers[i]->setCurrentPosition(0);
       steppers[i]->moveTo(0);
@@ -84,7 +106,6 @@ void doHoming() {
   if (all_done) {
     is_homed = true;
 
-    // ── Unlock full speed after homing ───────────────────
     for (int i = 0; i < 3; i++) {
       steppers[i]->setMaxSpeed(MAX_SPEED);
     }

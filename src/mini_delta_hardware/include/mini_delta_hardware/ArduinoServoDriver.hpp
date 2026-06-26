@@ -11,22 +11,69 @@ public:
     ArduinoServoDriver(std::string device_name)
         : device_name_(device_name) {}
 
-    int init() {
-        std::cout << "Initializing Arduino Servo Driver..." << std::endl;
+    // int init() {
+    //     std::cout << "Initializing Arduino Servo Driver..." << std::endl;
 
+    //     try {
+    //         serial_port_.Open(device_name_);
+    //         serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
+    //         std::cout << "Serial port opened successfully!" << std::endl;
+    //         return 0;
+    //     } catch (...) {
+    //         std::cout << "Failed to open serial port!" << std::endl;
+    //         return -1;
+    //     }
+
+    //     // In init() — wait for HOMED message before returning
+       
+    // }
+    int init() {
+    std::cout << "Initializing Arduino Servo Driver..." << std::endl;
+
+    try {
+        serial_port_.Open(device_name_);
+        serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
+        std::cout << "Serial port opened successfully!" << std::endl;
+    } catch (...) {
+        std::cout << "Failed to open serial port!" << std::endl;
+        return -1;
+    }
+
+    // ── Wait for Arduino to send "READY" after boot ──────────────
+    std::cout << "Waiting for Arduino READY..." << std::endl;
+    std::string line;
+    while (true) {
         try {
-            serial_port_.Open(device_name_);
-            serial_port_.SetBaudRate(LibSerial::BaudRate::BAUD_115200);
-            std::cout << "Serial port opened successfully!" << std::endl;
-            return 0;
+            serial_port_.ReadLine(line, '\n', 5000);  // 5 sec timeout
+            line.erase(line.find_last_not_of(" \r\n") + 1);  // trim
+            if (line == "HOMED") break;
         } catch (...) {
-            std::cout << "Failed to open serial port!" << std::endl;
+            std::cout << "Timeout waiting for READY!" << std::endl;
             return -1;
         }
-
-        // In init() — wait for HOMED message before returning
-       
     }
+
+    // ── Send START to trigger homing ──────────────────────────────
+    // std::cout << "Sending START..." << std::endl;
+    // serial_port_.Write("START\n");
+
+    // // ── Wait for HOMED before letting ROS2 control begin ─────────
+    // std::cout << "Waiting for homing to complete..." << std::endl;
+    // while (true) {
+    //     try {
+    //         serial_port_.ReadLine(line, '\n', 30000);  // 30 sec timeout
+    //         line.erase(line.find_last_not_of(" \r\n") + 1);  // trim
+    //         std::cout << "[Arduino] " << line << std::endl;  // shows JOINT_X_HOMED too
+    //         if (line == "HOMED") break;
+    //     } catch (...) {
+    //         std::cout << "Timeout waiting for HOMED!" << std::endl;
+    //         return -1;
+    //     }
+    // }
+
+    // std::cout << "Homing complete! Hardware ready." << std::endl;
+    return 0;
+}
 
     void activate() {
         std::cout << "Servo driver activated." << std::endl;
