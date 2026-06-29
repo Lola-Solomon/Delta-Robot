@@ -23,11 +23,11 @@ class State(Enum):
 
 
 # ── Coordinates ───────────────────────────────────────────
-PICK_X, PICK_Y = 0.0,  0.2
-DROP_X, DROP_Y = 0.2,  0.0
+PICK_X, PICK_Y = 0.25,  0.0
+DROP_X, DROP_Y = -0.25,  0.0
 Z_HOME         = -0.48
-Z_APPROACH     = -0.50
-Z_GRAB         = -0.65
+Z_APPROACH     = -0.55
+Z_GRAB         = -0.75
 
 
 class deltanode(Node):
@@ -74,7 +74,7 @@ class deltanode(Node):
         self.send_trajectory([
             (PICK_X, PICK_Y, Z_APPROACH),  # point 1 — above product
             (PICK_X, PICK_Y, Z_GRAB),       # point 2 — down to product
-        ], durations=[2, 4])
+        ], durations=[1, 2])
 
     # ─────────────────────────────────────────────────────
     def send_trajectory(self, xyz_list, durations):
@@ -135,10 +135,12 @@ class deltanode(Node):
         if self.state == State.PICK_APPROACH:
             # arrived at product → pump ON → lift up
             self.publish_pump('ON')
+            
             self.state = State.PICK_LIFT
+            # self._pump_timer = self.create_timer(1.5, self._on_pump_ready)
             self.send_trajectory([
                 (PICK_X, PICK_Y, Z_APPROACH),  # lift back up
-            ], durations=[2])
+            ], durations=[1])
 
         elif self.state == State.PICK_LIFT:
             # lifted with product → move to drop zone
@@ -146,7 +148,7 @@ class deltanode(Node):
             self.send_trajectory([
                 (DROP_X, DROP_Y, Z_APPROACH),  # above drop zone
                 (DROP_X, DROP_Y, Z_GRAB),       # down to drop zone
-            ], durations=[2, 4])
+            ], durations=[1, 2])
 
         elif self.state == State.DROP_APPROACH:
             # arrived at drop zone → pump OFF → lift up
@@ -154,20 +156,26 @@ class deltanode(Node):
             self.state = State.DROP_LIFT
             self.send_trajectory([
                 (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
-            ], durations=[2])
+            ], durations=[1])
 
         elif self.state == State.DROP_LIFT:
             # lifted → return home
             self.state = State.HOMING
             self.send_trajectory([
                 (0.0, 0.0, Z_HOME),            # home position
-            ], durations=[2])
+            ], durations=[1])
 
         elif self.state == State.HOMING:
             # cycle complete
             self.state = State.WAITING
             self.get_logger().info('Cycle complete. Waiting for next pick trigger.')
             self.save_to_csv()
+
+    # def _on_pump_ready(self):
+    #     self.destroy_timer(self._pump_timer)  # one shot
+    #     self.send_trajectory([
+    #         (PICK_X, PICK_Y, Z_APPROACH),
+    #     ], durations=[1])
 
     # ─────────────────────────────────────────────────────
     def publish_pump(self, state):

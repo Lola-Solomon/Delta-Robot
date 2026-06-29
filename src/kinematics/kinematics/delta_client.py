@@ -43,10 +43,10 @@ class deltanode(Node):
         pointf5 = JointTrajectoryPoint()
         pointf6 = JointTrajectoryPoint()
 
-        thetasi = inverse(0.0,0.2,-0.6)
-        thetasf = inverse(0.0,-0.0,-0.6)
-        thetasf2 = inverse(0.0,0.2,-0.6)
-        thetasf3 = inverse(0.0,-0.2,-0.6)
+        thetasi = inverse(0.4,0.0,-0.75)
+        thetasf = inverse(-0.4,0.0,-0.75)
+        thetasf2 = inverse(0.0,0.2,-0.5)
+        thetasf3 = inverse(0.0,-0.2,-0.5)
         thetasf4 = inverse(0.0,0.1,-0.6)
         thetasf5 = inverse(0.3,0.0,-0.6)
         thetasf6 = inverse(0.0,0.0,-0.45)
@@ -109,18 +109,18 @@ class deltanode(Node):
 
         # pointi.time_from_start = Duration(sec=0,nanosec=500000000)
         # pointf.time_from_start = Duration(sec=0,nanosec=800000000)
-        pointi.time_from_start = Duration(sec=1)
-        pointf.time_from_start = Duration(sec=2)
-        pointf2.time_from_start = Duration(sec=3)
-        pointf3.time_from_start = Duration(sec=4)
-        pointf4.time_from_start = Duration(sec=5)
-        pointf5.time_from_start = Duration(sec=6)
-        pointf6.time_from_start = Duration(sec=7)
+        pointi.time_from_start = Duration(sec=1,nanosec=0)
+        pointf.time_from_start = Duration(sec=2,nanosec=0)
+        pointf2.time_from_start = Duration(sec=2,nanosec=500000000)
+        pointf3.time_from_start = Duration(sec=3,nanosec=0)
+        pointf4.time_from_start = Duration(sec=3,nanosec=500000000)
+        pointf5.time_from_start = Duration(sec=4,nanosec=0)
+        pointf6.time_from_start = Duration(sec=4,nanosec=500000000)
 
 
 
-        # trajectory.points = [pointi,pointf,pointf2,pointf3,pointf4,pointf5,pointf6]
         trajectory.points = [pointi,pointf]
+        # trajectory.points = [pointi,pointf]
 
         goal_msg = FollowJointTrajectory.Goal()
         goal_msg.trajectory = trajectory
