@@ -20,7 +20,10 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'delta_client = kinematics.delta_client:main',
+            'delta_client=kinematics.delta_client:main',
+            'pump_client=kinematics.pump_client:main',
+            
+
 
         ],
     },
