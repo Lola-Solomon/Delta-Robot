@@ -101,22 +101,6 @@ void checkButton() {
 }
 
 // ─────────────────────────────────────────────────────────
-// void checkDone() {
-//   if (!moving) return;
-
-//   bool all_done = true;
-//   for (int i = 0; i < 3; i++) {
-//     if (steppers[i]->distanceToGo() != 0) {
-//       all_done = false;
-//       break;
-//     }
-//   }
-
-//   if (all_done) {
-//     moving = false;
-//     Serial.println("DONE");
-//   }
-// }
 
 // ─────────────────────────────────────────────────────────
 void doHoming() {
@@ -169,21 +153,21 @@ void readSerial() {
       // ── Check for pump commands ───────────────────────
       if (buf == "PUMP_ON") {
 
-        Serial.println("pump on");
+        // Serial.println("pump on");
         digitalWrite(PUMP_PIN, HIGH);
         buf = "";
         return;
       }
       if (buf == "PUMP_OFF") {
-        Serial.println(" pump off");
+        // Serial.println(" pump off");
         digitalWrite(PUMP_PIN, LOW);
         buf = "";
         return;
       }
       
       // ── Parse 3 step values ───────────────────────────
-      Serial.print("motors steps are : ");
-      Serial.println(buf);
+      // Serial.print("motors steps are : ");
+      // Serial.println(buf);
       long values[3] = {0, 0, 0};
       int  idx       = 0;
       String token   = "";
