@@ -78,7 +78,7 @@ class deltanode(Node):
         self.send_trajectory([
             (PICK_X, PICK_Y, Z_APPROACH),  # point 1 — above product
             (PICK_X, PICK_Y, Z_GRAB),       # point 2 — down to product
-        ], durations=[(1,0), (1,5_000_000_00)])  # durations in seconds and nanoseconds
+        ], durations=[(1,0), (2,0)])  # durations in seconds and nanoseconds
 
     # ─────────────────────────────────────────────────────
     def send_trajectory(self, xyz_list, durations):
@@ -158,7 +158,7 @@ class deltanode(Node):
             # arrived at drop zone → pump OFF → lift up
             self.publish_pump('OFF')
             self.state = State.DROP_LIFT
-            self._release_timer = self.create_timer(1.5, self._on_release_ready)
+            self._release_timer = self.create_timer(1, self._on_release_ready)
             # self.send_trajectory([
             #     (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
             # ], durations=[2])
@@ -178,7 +178,7 @@ class deltanode(Node):
 
     def _on_pump_ready(self):
         self.destroy_timer(self._pump_timer)  # one shot
-        
+
         self.send_trajectory([
             (PICK_X, PICK_Y, Z_APPROACH),
         ], durations=[(1,0)])
