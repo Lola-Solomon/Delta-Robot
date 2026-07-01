@@ -27,7 +27,7 @@ PICK_X, PICK_Y = 0.25,  0.0
 DROP_X, DROP_Y = -0.25,  0.0
 Z_HOME         = -0.48
 Z_APPROACH     = -0.55
-Z_GRAB         = -0.75
+Z_GRAB         = -0.7
 
 
 class deltanode(Node):
@@ -137,10 +137,10 @@ class deltanode(Node):
             self.publish_pump('ON')
             
             self.state = State.PICK_LIFT
-            # self._pump_timer = self.create_timer(1.5, self._on_pump_ready)
-            self.send_trajectory([
-                (PICK_X, PICK_Y, Z_APPROACH),  # lift back up
-            ], durations=[1])
+            self._pump_timer = self.create_timer(1.5, self._on_pump_ready)
+            # self.send_trajectory([
+            #     (PICK_X, PICK_Y, Z_APPROACH),  # lift back up
+            # ], durations=[1])
 
         elif self.state == State.PICK_LIFT:
             # lifted with product → move to drop zone
@@ -154,9 +154,10 @@ class deltanode(Node):
             # arrived at drop zone → pump OFF → lift up
             self.publish_pump('OFF')
             self.state = State.DROP_LIFT
-            self.send_trajectory([
-                (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
-            ], durations=[1])
+            self._release_timer = self.create_timer(1.5, self._on_release_ready)
+            # self.send_trajectory([
+            #     (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
+            # ], durations=[2])
 
         elif self.state == State.DROP_LIFT:
             # lifted → return home
@@ -171,11 +172,17 @@ class deltanode(Node):
             self.get_logger().info('Cycle complete. Waiting for next pick trigger.')
             self.save_to_csv()
 
-    # def _on_pump_ready(self):
-    #     self.destroy_timer(self._pump_timer)  # one shot
-    #     self.send_trajectory([
-    #         (PICK_X, PICK_Y, Z_APPROACH),
-    #     ], durations=[1])
+    def _on_pump_ready(self):
+        self.destroy_timer(self._pump_timer)  # one shot
+        self.send_trajectory([
+            (PICK_X, PICK_Y, Z_APPROACH),
+        ], durations=[1])
+
+    def _on_release_ready(self):
+        self.destroy_timer(self._release_timer)  # one shot
+        self.send_trajectory([
+            (DROP_X, DROP_Y, Z_APPROACH),  # lift back up
+        ], durations=[1])    
 
     # ─────────────────────────────────────────────────────
     def publish_pump(self, state):
